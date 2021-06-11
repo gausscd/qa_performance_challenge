@@ -1,0 +1,59 @@
+config:
+  target: "https://api.todoist.com"
+  processor: "./functions.js"
+  phases: 
+    - duration: 5
+      arrivalRate: 2
+      name: "Todoist flow: "
+  defaults:
+    headers:
+      Authorization: Bearer c4c223ec5568866dfe283625f8dc776506b9d53f
+      Content-Type: application/json
+  variables: 
+    project_name:
+      - "New Performance project"
+    task_content:
+      - "Performance task content1"
+    url_project:
+      - "/rest/v1/project"        
+    url_tasks:
+      - "/rest/v1/tasks"
+    task_description:
+      - "new task description"
+scenarios:
+  - flow:   
+    - get: #get active tasks
+        url: "{{ url_tasks }}"
+    - log: "1. Finished getting active tasks"
+    - think: 10
+    -  post: #create new task
+        url: "{{ url_tasks }}"
+        json:
+          content: "{{task_content}}"
+        capture: 
+          json: "$.id"
+          as: "id_task"
+    - log: "Task Id is: {{ id_task }}"
+    - log: "2. Finished creating task"  
+    - think: 10
+    - get: #get an active task
+       url: "{{ url_tasks }}/{{ id_task }}"
+    - log: "3. Finished getting a task"  
+    - think: 10       
+    - post: #update a task
+       url: "{{ url_tasks }}/{{ id_task }}" 
+       json:
+          description: "{{ task_description }}"
+    - log: "4. Finished upadting task"  
+    - think: 10        
+    - post: # change task to completed        
+       url: "{{ url_tasks }}/{{ id_task }}/close" 
+    - log: "5. Finished completing task"  
+    - think: 10  
+    - post: # reopen task        
+       url: "{{ url_tasks }}/{{ id_task }}/reopen"    
+    - log: "6. Finished reopening task"
+    - think: 10         
+    - delete: # delete a task
+       url: "{{ url_tasks }}/{{ id_task }}" 
+    - log: "7. Finished deleting task"
