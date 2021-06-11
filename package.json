@@ -1,0 +1,17 @@
+{
+  "name": "qa_performance_workshop",
+  "version": "1.0.0",
+  "description": "Artillery qorkshop",
+  "main": "index.js",
+  "scripts": {
+    "test": "artillery run todoist-performance.yml"
+  },
+  "author": "Felipe HErrera",
+  "license": "ISC",
+  "devDependencies": {
+    "artillery": "^1.7.2"
+  },
+  "dependencies": {
+    "faker": "^5.5.3"
+  }
+}
